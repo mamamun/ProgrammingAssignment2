@@ -1,40 +1,40 @@
-makeCacheMatrix <- function(x = numeric()) {
+makeCacheMatrix <- function(x = matrix()) {
   m <- NULL
   set <- function(y) {
-    x <<- y
-    m <<- NULL
+    x <<- y                   # Lexical scoping. So x will be accessible beyond this "set" function
+    m <<- NULL                # Lexical scoping. So x will be accessible beyond this "set" function
   }
-  get <- function() {
+  get <- function() {         # It will contain the given matrix
     x
   }
   
-  setmean <- function(mean) {
-    m <<- mean
+  setSolve <- function(Solve) {
+    m <<- Solve               # Lexical scoping. So x will be accessible beyond this "setSolve" function
   }
-  getmean <- function() {
+  getSolve <- function() {
     m
   }
   list(set = set, get = get,
-       setmean = setmean,
-       getmean = getmean)
+       setSolve = setSolve,
+       getSolve = getSolve)
 }
 
 
 cacheSolve <- function(x, ...) {
-  m <- x$getmean()
+  m <- x$getSolve()
   if(!is.null(m)) {
     message("getting cached data")
     return(m)
   }
   data <- x$get()
   m <- solve(data, ...)
-  x$setmean(m)
+  x$setSolve(m)
   m
 }
 
-# vec<- makeCacheMatrix()
-# samplevector<- matrix(rnorm(5*5),5,5)
-# vec$set(samplevector)
-# vec$get()
-# cacheSolve(vec)
-# cacheSolve(vec)
+vec<- makeCacheMatrix()
+samplevector<- matrix(rnorm(5*5),5,5)
+vec$set(samplevector)
+vec$get()
+cacheSolve(vec)
+cacheSolve(vec)
